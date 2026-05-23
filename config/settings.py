@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     )
 
     # ── Application ────────────────────────────────────────────────────────────
-    app_name: str = Field(default="EscalationSync", description="Service display name")
+    app_name: str = Field(default="Dispatch", description="Service display name")
     app_version: str = Field(default="1.0.0")
     environment: Literal["development", "staging", "production"] = Field(
         default="development"
@@ -53,9 +53,9 @@ class Settings(BaseSettings):
 
     # ── LangGraph / Agent Tuning ───────────────────────────────────────────────
     # We will use Qwen for all roles in this local setup
-    triage_model: str = Field(default="qwen")
-    escalation_model: str = Field(default="qwen")
-    resolution_model: str = Field(default="qwen")
+    triage_model: str = Field(default="phi4-mini:latest")
+    escalation_model: str = Field(default="phi4-mini:latest")
+    resolution_model: str = Field(default="phi4-mini:latest")
 
     # Retry configuration
     llm_max_retries: int = Field(default=3, ge=1, le=10)

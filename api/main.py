@@ -1,6 +1,6 @@
 """
 api/main.py
-FastAPI application entry-point for EscalationSync.
+FastAPI application entry-point for Dispatch.
 
 Exposes:
   POST /v1/execute-agent  – receives n8n webhook payload, runs the LangGraph,
@@ -38,11 +38,11 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Pre-warm the compiled graph on startup so the first request is fast."""
-    logger.info("EscalationSync starting up | env=%s", settings.environment)
+    logger.info("Dispatch starting up | env=%s", settings.environment)
     get_compiled_graph()  # pre-compile
     logger.info("LangGraph pre-compiled and ready")
     yield
-    logger.info("EscalationSync shutting down")
+    logger.info("Dispatch shutting down")
 
 
 # ── Application factory ────────────────────────────────────────────────────────
@@ -115,7 +115,7 @@ def _register_routes(app: FastAPI) -> None:
         response_model=ExecuteAgentResponse,
         status_code=status.HTTP_200_OK,
         tags=["Agent"],
-        summary="Execute the EscalationSync multi-agent pipeline",
+        summary="Execute the Dispatch multi-agent pipeline",
     )
     async def execute_agent(
         payload: N8nWebhookPayload,

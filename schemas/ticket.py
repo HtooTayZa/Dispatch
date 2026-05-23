@@ -1,6 +1,6 @@
 """
 schemas/ticket.py
-All Pydantic v2 models used across the EscalationSync pipeline.
+All Pydantic v2 models used across the Dispatch pipeline.
 
 • N8nWebhookPayload  – the inbound request body from n8n
 • TicketAnalysis     – structured output produced by the Triage LLM node

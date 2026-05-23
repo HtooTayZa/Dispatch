@@ -1,20 +1,20 @@
 """
 agents/graph.py
-LangGraph state machine for the EscalationSync pipeline.
+LangGraph state machine for the Dispatch pipeline.
 
 Graph topology
 ──────────────
   [START]
      │
      ▼
-  triage_node          (Ollama Qwen – structured output: TicketAnalysis)
+  triage_node          (Ollama – structured output: TicketAnalysis)
      │
      ▼ conditional_router
     ┌─────────────────┐
     │                 │
     ▼                 ▼
 escalation_node   standard_resolution_node
-(Ollama Qwen)     (Ollama Qwen)
+(Ollama)         (Ollama )
     │                 │
     └────────┬────────┘
              ▼
