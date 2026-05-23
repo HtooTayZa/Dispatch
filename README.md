@@ -1,4 +1,4 @@
-# EscalationSync
+# Dispatch
 
 An autonomous, privacy-first support triage system that sits between your inbound channels (web forms, email) and your team's workflow tools (Slack, Gmail). It uses a local-first agentic pipeline — built on LangGraph — to classify incoming tickets, decide whether they warrant escalation, and draft context-aware responses, all without sending data to a third-party LLM unless you explicitly choose to.
 
@@ -132,7 +132,7 @@ Copy the generated `trycloudflare.com` URL into the HTTP Request node in your n8
 
 ## Choosing an LLM Provider
 
-EscalationSync uses LangChain's provider abstraction, so swapping the underlying model requires only two changes: updating the factory functions in `agents/graph.py` and setting the relevant environment variables.
+Dispatch uses LangChain's provider abstraction, so swapping the underlying model requires only two changes: updating the factory functions in `agents/graph.py` and setting the relevant environment variables.
 
 ### Option A — Local (default)
 
