@@ -116,10 +116,6 @@ def _register_routes(app: FastAPI) -> None:
         status_code=status.HTTP_200_OK,
         tags=["Agent"],
         summary="Execute the EscalationSync multi-agent pipeline",
-        response_description=(
-            "Settled LangGraph state including TicketAnalysis, routing decision, "
-            "and generated resolution draft."
-        ),
     )
     async def execute_agent(
         payload: N8nWebhookPayload,
@@ -129,12 +125,30 @@ def _register_routes(app: FastAPI) -> None:
         Accepts an n8n webhook payload, feeds it into the LangGraph execution
         loop, waits for the state machine to settle, and returns the complete
         structured state back to n8n as a clean JSON response.
-
-        **Webhook signature verification** (optional):
-        If `N8N_WEBHOOK_SECRET` is configured, every request must include an
-        `X-N8N-Signature` header containing the HMAC-SHA256 of the raw request
-        body signed with the shared secret.
         """
+        
+        # --- FEATURE FLAG: ULTIMATE MOCK BYPASS ---
+        if settings.use_mock_bypass:
+            logger.info("execute_agent | ULTIMATE MOCK BYPASS ACTIVE")
+            from schemas.ticket import TicketAnalysis
+            from uuid import uuid4
+            return ExecuteAgentResponse(
+                run_id=uuid4(),
+                ticket_id=payload.ticket_id,
+                customer_email=str(payload.customer_email),
+                analysis=TicketAnalysis(
+                    category="Billing", 
+                    sentiment="Neutral", 
+                    confidence_score=0.99,
+                    needs_human_escalation=False, 
+                    suggested_tags=["mock"]
+                ),
+                routed_to="standard",
+                resolution_draft="THIS IS THE ULTIMATE MOCK BYPASS WORKING! The AI is currently disabled.",
+                error=None
+            )
+        # ------------------------------------------
+
         # ── Optional signature verification ───────────────────────────────────
         webhook_secret = settings.n8n_webhook_secret.get_secret_value()
         if webhook_secret:
@@ -146,14 +160,8 @@ def _register_routes(app: FastAPI) -> None:
                 hashlib.sha256,
             ).hexdigest()
             if not hmac.compare_digest(expected_sig, signature_header):
-                logger.warning(
-                    "execute_agent | invalid webhook signature | ticket_id=%s",
-                    payload.ticket_id,
-                )
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Invalid webhook signature",
-                )
+                logger.warning("execute_agent | invalid webhook signature | ticket_id=%s", payload.ticket_id)
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid webhook signature")
 
         logger.info(
             "execute_agent | START | ticket_id=%s email=%s",
@@ -169,10 +177,7 @@ def _register_routes(app: FastAPI) -> None:
         try:
             final_state = await run_graph(initial_state_dict)
         except Exception as exc:
-            logger.exception(
-                "execute_agent | graph execution failed | ticket_id=%s",
-                payload.ticket_id,
-            )
+            logger.exception("execute_agent | graph execution failed | ticket_id=%s", payload.ticket_id)
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Agent graph execution failed: {exc}",
@@ -182,17 +187,14 @@ def _register_routes(app: FastAPI) -> None:
         try:
             final_agent_state = AgentState(**final_state)
         except Exception as exc:
-            logger.error(
-                "execute_agent | state deserialisation failed | ticket_id=%s | %s",
-                payload.ticket_id,
-                exc,
-            )
+            logger.error("execute_agent | state deserialisation failed | ticket_id=%s | %s", payload.ticket_id, exc)
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail=f"Final state validation error: {exc}",
             ) from exc
 
         response = ExecuteAgentResponse.from_state(final_agent_state)
+        response.raw_issue_text = payload.raw_issue_text
 
         logger.info(
             "execute_agent | END | ticket_id=%s routed_to=%s error=%s",
@@ -203,10 +205,8 @@ def _register_routes(app: FastAPI) -> None:
 
         return response
 
-
 # ── Module-level app instance ──────────────────────────────────────────────────
 app = create_app()
-
 
 # ── CLI entry-point ────────────────────────────────────────────────────────────
 if __name__ == "__main__":

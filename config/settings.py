@@ -28,21 +28,14 @@ class Settings(BaseSettings):
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = Field(
         default="INFO"
     )
+    
+    # Feature Flag for testing the n8n pipeline without running the AI
+    use_mock_bypass: bool = Field(default=False, description="Bypass AI execution")
 
     # ── API Server ─────────────────────────────────────────────────────────────
     api_host: str = Field(default="0.0.0.0")
     api_port: int = Field(default=8000, ge=1, le=65535)
     api_workers: int = Field(default=1, ge=1)
-
-    # ── LLM Provider Keys ──────────────────────────────────────────────────────
-    google_api_key: SecretStr = Field(
-        default=SecretStr("REPLACE_ME"),
-        description="Google AI Studio / Vertex API key for Gemini models",
-    )
-    anthropic_api_key: SecretStr = Field(
-        default=SecretStr("REPLACE_ME"),
-        description="Anthropic API key for Claude models",
-    )
 
     # ── Observability ──────────────────────────────────────────────────────────
     langfuse_secret_key: SecretStr = Field(
@@ -59,11 +52,12 @@ class Settings(BaseSettings):
     )
 
     # ── LangGraph / Agent Tuning ───────────────────────────────────────────────
-    triage_model: str = Field(default="gemini-1.5-flash")
-    escalation_model: str = Field(default="claude-3-5-sonnet-20241022")
-    resolution_model: str = Field(default="gemini-1.5-flash")
+    # We will use Qwen for all roles in this local setup
+    triage_model: str = Field(default="qwen")
+    escalation_model: str = Field(default="qwen")
+    resolution_model: str = Field(default="qwen")
 
-    # Retry configuration (applied to every LLM node)
+    # Retry configuration
     llm_max_retries: int = Field(default=3, ge=1, le=10)
     llm_retry_wait_seconds: float = Field(default=2.0, ge=0.5)
 

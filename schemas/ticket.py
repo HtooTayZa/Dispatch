@@ -169,10 +169,12 @@ class ExecuteAgentResponse(BaseModel):
     run_id: UUID
     ticket_id: str
     customer_email: str
+    raw_issue_text: Optional[str] = None
     analysis: Optional[TicketAnalysis]
     routed_to: Optional[Literal["escalation", "standard"]]
     resolution_draft: Optional[str]
     error: Optional[str] = None
+    
 
     @classmethod
     def from_state(cls, state: AgentState) -> "ExecuteAgentResponse":
