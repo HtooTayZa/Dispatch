@@ -93,7 +93,7 @@ async def triage_node(state: dict[str, Any]) -> dict[str, Any]:
         )
         return {**state, "analysis": analysis}
     except Exception as exc:
-        logger.error("triage_node | FAILED ticket_id=%s | %s", ticket.ticket_id, exc)
+        logger.exception("triage_node | FAILED ticket_id=%s | %s", ticket.ticket_id, exc)
         return {**state, "error": f"Triage node error: {exc}"}
 
 
@@ -176,7 +176,7 @@ async def escalation_node(state: dict[str, Any]) -> dict[str, Any]:
         return {**state, "resolution_draft": draft, "routed_to": "escalation"}
         
     except Exception as exc:
-        logger.error("escalation_node | FAILED ticket_id=%s | %s", ticket.ticket_id, exc)
+        logger.exception("escalation_node | FAILED ticket_id=%s | %s", ticket.ticket_id, exc)
         return {**state, "routed_to": "escalation", "error": f"Escalation node error: {exc}"}
 
 

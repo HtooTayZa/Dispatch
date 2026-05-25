@@ -20,7 +20,7 @@ The entire pipeline is observable through [Langfuse](https://langfuse.com), whic
 ## Project Structure
 
 ```
-EscSync/
+Dispatch/
 ├── agents/          # LangGraph graph definition, nodes, and conditional router
 ├── api/             # FastAPI application and route handlers
 ├── config/          # Settings (loaded from .env via pydantic-settings)
