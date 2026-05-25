@@ -49,8 +49,9 @@ settings = get_settings()
 def _make_local_llm(model_name: str = "phi4-mini:latest", temperature: float = 0.0) -> ChatOllama:
     """Return an Ollama local model instance."""
     return ChatOllama(
-        model="phi4-mini:latest",  # Hardcoded here to ensure no override
+        model="phi4-mini:latest",  
         temperature=temperature,
+        timeout=120.0 
     )
 
 # ── Node A: Triage ─────────────────────────────────────────────────────────────
