@@ -17,7 +17,7 @@ The entire pipeline is observable through [Langfuse](https://langfuse.com), whic
 
 ## Demo
 
-[[Watch the Dispatch Demo](https://img.youtube.com/vi/naLJ_bwnQgI/maxresdefault.jpg)]([https://youtu.be/YOUR_VIDEO_ID](https://youtu.be/naLJ_bwnQgI))
+[[Watch the Dispatch Demo](https://img.youtube.com/vi/naLJ_bwnQgI/maxresdefault.jpg)](https://youtu.be/naLJ_bwnQgI))
 
 *Click the image above to watch a walkthrough of the ticket triage and escalation pipeline.*
 
