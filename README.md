@@ -15,6 +15,12 @@ A ticket submitted through [Tally.so](https://tally.so) triggers a webhook in n8
 
 The entire pipeline is observable through [Langfuse](https://langfuse.com), which traces every LLM call so you can audit decisions and tune prompts over time.
 
+## Demo
+
+[[Watch the Dispatch Demo](https://img.youtube.com/vi/naLJ_bwnQgI/maxresdefault.jpg)]([https://youtu.be/YOUR_VIDEO_ID](https://youtu.be/naLJ_bwnQgI))
+
+*Click the image above to watch a walkthrough of the ticket triage and escalation pipeline.*
+
 ---
 
 ## Project Structure
